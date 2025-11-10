@@ -3,7 +3,7 @@ from classes.entidade import Entidade
 
 class Aviao(Entidade):
     def __init__(self):
-        sprite = "sprites/aviao.png"
+        sprite = "sprites/player.png"
         dims = (32, 32)
         pos = [384, 500]
         super().__init__(sprite, dims, pos)
