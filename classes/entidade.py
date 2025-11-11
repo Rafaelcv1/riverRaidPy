@@ -1,6 +1,7 @@
 import pygame
 
 class Entidade:
+    gameDisplay = pygame.display.set_mode((800, 600))
     def __init__(self, sprite, dims, pos):
         # Carrega e redimensiona o sprite
         self.sprite = pygame.transform.scale(
@@ -16,10 +17,10 @@ class Entidade:
         self.rect = self.sprite.get_rect(center=(self.x, self.y))
         self.mask = pygame.mask.from_surface(self.sprite)
 
-    def imprimir(self, gamedisplay):
+    def imprimir(self):
         # Atualiza posição e desenha o sprite na tela
         self.rect.topleft = (self.x, self.y)
-        gamedisplay.blit(self.sprite, (self.x, self.y))
+        self.gameDisplay.blit(self.sprite, (self.x, self.y))
 
     def colisao(self, outro):
         # Exemplo básico de detecção de colisão por máscara
