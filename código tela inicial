@@ -1,0 +1,171 @@
+import pygame
+import random
+import sys
+
+pygame.init() 
+
+  
+largurat = 800
+alturat = 600
+
+gameDisplay = pygame.display.set_mode((largurat, alturat))
+
+pygame.display.set_caption('aviãozinho explode tudo') 
+
+tempo = pygame.time.Clock() 
+
+class Entidade:
+    def __init__ (self, sprite, sprAlt, sprComp, Xcord, Ycord, velX, velY):
+        self.x = Xcord
+        self.y = Ycord
+        self.velx = velX
+        self.vely = velY
+        spritePqn = pygame.image.load(sprite)
+        self.sprite = pygame.transform.scale(spritePqn, (sprAlt, sprComp))
+
+    def imprimir(self):
+        gameDisplay.blit(self.sprite, (self.x, self.y))
+
+    def colisao(self):
+        self.caixaDeCol = pygame.Rect((self.x, self.y, self.sprite.get_width(), self.sprite.get_height()))
+        return self.caixaDeCol
+
+class aviao(Entidade):
+    def movimento(self, teclas):
+        if teclas[pygame.K_d]  or teclas[pygame.K_RIGHT]:
+            self.x += self.velx
+        if teclas[pygame.K_a] or teclas[pygame.K_LEFT]:
+            self.x += -self.velx
+
+class caem(Entidade):
+    def queda(self, teclas):
+        if teclas[pygame.K_w]  or teclas[pygame.K_UP]:
+            self.y += self.vely**2
+        else:
+            self.y += self.vely
+    def caminhar(self, direcao):
+        if self.y >= 300:
+            if direcao == 1:
+                self.x += self.velx
+            else:
+                self.x -= self.velx
+
+
+def gerarbalas(tecla, balas, player, bala_velo, bala_W, bala_H):
+    global ultima_bala
+    Bala_de_Agora = pygame.time.get_ticks()
+    if tecla[pygame.K_SPACE] and (Bala_de_Agora - ultima_bala) > intervalo_balas:
+        balas.append([player.x + 12, player.y])
+        ultima_bala = Bala_de_Agora
+
+    i = 0
+    while i < len(balas):
+        balas[i][1] += bala_velo
+        if balas[i][1] >= 0:
+            pygame.draw.rect(gameDisplay, "Yellow", [balas[i][0], balas[i][1], bala_W, bala_H])
+            i += 1
+        else:
+            balas.remove(balas[i])
+    return balas
+
+class animacao(pygame.sprite.Sprite):
+    def __init__(self, pos_anim_x, pos_anim_y):
+        super().__init__()
+        self.bandeiras = []
+        self.bandeiras.append(pygame.image.load("OneDrive\Documentos\py\jogo/animação/bandeira_0.png"))
+        self.bandeiras.append(pygame.image.load("OneDrive\Documentos\py\jogo/animação/bandeira_1.png"))
+        self.bandeiras.append(pygame.image.load("OneDrive\Documentos\py\jogo/animação/bandeira_2.png"))
+        self.bandeiras.append(pygame.image.load("OneDrive\Documentos\py\jogo/animação/bandeira_3.png"))
+        self.bandeiras.append(pygame.image.load("OneDrive\Documentos\py\jogo/animação/bandeira_2.png"))
+        self.bandeiras.append(pygame.image.load("OneDrive\Documentos\py\jogo/animação/bandeira_1.png"))
+        self.bandeiras.append(pygame.image.load("OneDrive\Documentos\py\jogo/animação/bandeira_0.png"))
+        self.imagem_inicial = 0
+        self.animado = self.bandeiras[self.imagem_inicial]
+
+        self.rect = self.animado.get_rect()
+        self.rect.topleft = [pos_anim_x, pos_anim_y]
+
+    def printa(self, velocidade):
+        
+        self.imagem_inicial += velocidade
+        
+        if self.imagem_inicial >= len(self.bandeiras):
+            self.imagem_inicial = 0
+        self.animado = self.bandeiras[int(self.imagem_inicial)]
+        self.image = self.animado
+
+def telainicial():
+    bandeira_x = 500
+    bandeira_y = 200
+    bandeira = animacao(bandeira_x, bandeira_y)
+    movimento = pygame.sprite.Group(bandeira)
+
+    while True:
+        tempo.tick(30)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_u:
+                    return
+        gameDisplay.fill((50, 100, 255))
+        
+        if bandeira_x <= 50:
+            bandeira_x = 50
+        else:
+            bandeira_x -= 5
+        bandeira.rect.x = bandeira_x
+        bandeira.printa(0.25)
+        movimento.draw(gameDisplay)
+
+        pygame.display.update()
+
+player = aviao("OneDrive\Documentos\py\jogo\imagens/char.png", 32, 32, 400-16, 480, 5, 0)
+helic = caem("OneDrive\Documentos\py\jogo\imagens/helic1.png", 32, 32, 400-16, 0, 2, 2)
+helic2 = caem("OneDrive\Documentos\py\jogo\imagens/helic1.png", 32, 32, 200+16, -30, 2, 2)
+helic3 = caem("OneDrive\Documentos\py\jogo\imagens/helic1.png", 32, 32, 400, -100, 2, 2)
+
+bala_W = 4
+bala_H = 15
+bala_velo = -7
+balas = []
+ultima_bala = 0
+intervalo_balas = 300
+
+telainicial()
+
+movimento = pygame.sprite.Group()
+bandeira_x = 1200
+bandeira_y = 350
+bandeira = animacao(bandeira_x, bandeira_y)
+movimento.add(bandeira)
+
+
+
+while True:
+    gameDisplay.fill((50, 100, 255))
+    tempo.tick(60)
+    tecla = pygame.key.get_pressed()
+    for evento in pygame.event.get():
+        if evento.type == pygame.QUIT:
+            sys.exit()
+ 
+    balas = gerarbalas(tecla, balas, player, bala_velo, bala_W, bala_H)
+
+    player.movimento(tecla)
+    player.imprimir()
+
+    helic.queda(tecla)
+    helic.caminhar(1)
+    helic.imprimir()
+
+    helic2.queda(tecla)
+    helic2.caminhar(0)
+    helic2.imprimir()
+
+    helic3.queda(tecla)
+    helic3.caminhar(1)
+    helic3.imprimir()
+
+    pygame.display.update()
