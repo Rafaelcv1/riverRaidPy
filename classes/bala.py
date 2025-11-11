@@ -1,14 +1,12 @@
 import pygame
-import Entidade
+from classes.entidade import Entidade
 
 class Bala(Entidade):
-    def __init__(self, sprite ,dims, pos):
-        sprite = "sprites/bala.png"
-        dims = (4, 4)
-        vel = 16
+    def __init__(self, pos):
+        sprite = "sprites/tiro.png"
+        dims = (8, 8)
         super().__init__(sprite, dims, pos)
-        self.vel = vel
+        self.vel = 8
 
     def movTiro(self):
-        while self.y < 804:
-            self.y -= self.vel
+        self.y -= self.vel

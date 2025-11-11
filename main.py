@@ -1,10 +1,6 @@
-import pygame
-import random
-import sys
+import pygame, random, sys, time
 from classes.aviao import Aviao
-from classes.helic import Helic
-from classes.helic import gerarhelic
-#from classes.gerarHelic import gerarHelic
+from classes.helic import *
 
 pygame.init() 
 largurat = 800
@@ -18,22 +14,41 @@ player = Aviao()
 
 helic_list = gerarhelic(10)
 
+balas = []
+reload_time = 0.25
+lastShot = 0
+
 while True:
+
+    for evento in pygame.event.get():
+       if evento.type == pygame.QUIT:
+           sys.exit()
+
     gameDisplay.fill("royalblue4")
     tempo.tick(30)
 
-    for evento in pygame.event.get():
-        if evento.type == pygame.QUIT:
-            sys.exit()
-
     tecla = pygame.key.get_pressed()
 
-    player.imprimir(gameDisplay)
-
+    player.imprimir()
     player.movPlayer(tecla)
-    for i in helic_list:
-        i.imprimir(gameDisplay)
-        i.movHoriz()
-        i.queda(tecla)
+
+    #gerar bala
+    if tecla[pygame.K_SPACE] and (time.time() - lastShot) >= reload_time:
+        balas.append(player.atirar())
+        lastShot = time.time()
+        player.atirar()
+
+
+    #imprime as entidades em vetores
+    for bala in balas:
+        bala.imprimir()
+        bala.movTiro()
+        if bala.y < -32:
+            balas.remove(bala)
+
+    for helic in helic_list:
+        helic.imprimir()
+        helic.movHoriz()
+        helic.queda(tecla)
 
     pygame.display.update()

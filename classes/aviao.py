@@ -1,5 +1,6 @@
 import pygame
 from classes.entidade import Entidade
+from classes.bala import Bala
 
 class Aviao(Entidade):
     def __init__(self):
@@ -14,4 +15,8 @@ class Aviao(Entidade):
             self.x += self.vel
         if teclas[pygame.K_a] or teclas[pygame.K_LEFT]:
             self.x -= self.vel
+    
+    def atirar(self):
+        bala = Bala((self.x+8, self.y-8))
+        return bala
 
