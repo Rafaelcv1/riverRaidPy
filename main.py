@@ -12,7 +12,7 @@ tempo = pygame.time.Clock()
 
 player = Aviao()
 
-helic_list = gerarhelic(10)
+helic_list = []
 
 balas = []
 reload_time = 0.25
@@ -36,19 +36,22 @@ while True:
     if tecla[pygame.K_SPACE] and (time.time() - lastShot) >= reload_time:
         balas.append(player.atirar())
         lastShot = time.time()
-        player.atirar()
 
-
+    if random.randint(0,100) > 1:
+        helic_list.append(gerarhelic())
+    
     #imprime as entidades em vetores
     for bala in balas:
         bala.imprimir()
         bala.movTiro()
         if bala.y < -32:
             balas.remove(bala)
-
+    
     for helic in helic_list:
         helic.imprimir()
         helic.movHoriz()
         helic.queda(tecla)
+        if helic.y < -32:
+            helic_list.remove(helic)
 
     pygame.display.update()
