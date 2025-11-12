@@ -1,13 +1,13 @@
 to install dependencies:\
-source .venv/bin/activate\
-pip install -r requirements.txt\
+pip install -r requirements.txt
+
+
+to run the game:\
+python -m venv .venv\
+source .venv/bin/activate
 
 
 todo:
 - colisao
 - mapa
 - combustivel
-
-
-problemas:
-- movEsq + acelerar + atirar não funcionam ao mesmo tempo
