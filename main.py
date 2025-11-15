@@ -28,6 +28,7 @@ while True:
     tempo.tick(30)
 
     tecla = pygame.key.get_pressed()
+    SETACIMA = pygame.key.get_pressed()
 
     player.imprimir()
     player.movPlayer(tecla)
@@ -37,7 +38,7 @@ while True:
         balas.append(player.atirar())
         lastShot = time.time()
 
-    if random.randint(0,100) > 1:
+    if random.randint(0,1000) > 250 and len(helic_list) < 15:
         helic_list.append(gerarhelic())
     
     #imprime as entidades em vetores
@@ -50,8 +51,19 @@ while True:
     for helic in helic_list:
         helic.imprimir()
         helic.movHoriz()
-        helic.queda(tecla)
-        if helic.y < -32:
+        helic.queda(SETACIMA)
+        for bala in balas:
+            col = helic.colisao(bala)
+            if col == True:
+                helic_list.remove(helic)
+                balas.remove(bala)
+        if helic.y > 832:
             helic_list.remove(helic)
+        if helic.y < -50:
+            helic_list.remove(helic)
+
+        col_player = helic.colisao(player)
+        if col_player == True:
+            sys.exit()
 
     pygame.display.update()

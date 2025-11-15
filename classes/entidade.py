@@ -22,8 +22,11 @@ class Entidade:
         self.rect.topleft = (self.x, self.y)
         self.gameDisplay.blit(self.sprite, (self.x, self.y))
 
-    def colisao(self, outro):
-        # Exemplo básico de detecção de colisão por máscara
+    def colisaoMask(self, outro):
         offset = (int(outro.x - self.x), int(outro.y - self.y))
         return self.mask.overlap(outro.mask, offset) is not None
+
+    def colisaoRect(self, outro):
+        offset = (int(outro.x - self.x), int(outro.y - self.y))
+        return self.rect.overlap(outro.rect, offset) is not None
 
