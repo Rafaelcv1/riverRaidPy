@@ -53,16 +53,17 @@ while True:
         helic.movHoriz()
         helic.queda(SETACIMA)
         for bala in balas:
-            col = helic.colisao(bala)
+            col = helic.colisaoRect(bala)
             if col == True:
                 helic_list.remove(helic)
                 balas.remove(bala)
+
         if helic.y > 832:
             helic_list.remove(helic)
         if helic.y < -50:
             helic_list.remove(helic)
 
-        col_player = helic.colisao(player)
+        col_player = helic.colisaoMask(player)
         if col_player == True:
             sys.exit()
 
