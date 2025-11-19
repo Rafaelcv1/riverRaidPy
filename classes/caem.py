@@ -8,6 +8,6 @@ class Caem(Entidade):
 
     def queda(self, teclas):
         if teclas[pygame.K_w] or teclas[pygame.K_UP]:
-            self.y += self.velY*4
+            self.y += self.velY*2
         else:
             self.y += self.velY
